@@ -8,8 +8,178 @@
     <title>Nightmare Before AI</title>
     <script type="module" crossorigin src="/assets/index-aa75ce28.js"></script>
     <link rel="stylesheet" href="/assets/index-68651959.css">
+    <!-- Aesthetic override: Graveyard of Creation brand alignment -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+      /* ── PALETTE: replace magenta with crimson/void ── */
+      :root {
+        --nightmare-accent-pink: #C41A1A;
+        --nightmare-dark-purple: #070205;
+        --nightmare-deep-purple: #0D0508;
+        --nightmare-crimson:     #C41A1A;
+        --nightmare-blood-red:   #9A1010;
+        --nightmare-dark-gray:   #0D0508;
+      }
+
+      /* ── BASE ── */
+      body {
+        background-color: #070205;
+        font-family: 'Inter', system-ui, sans-serif;
+      }
+
+      /* ── FONT: Nosifer → Cinzel Decorative (already in bundle) ── */
+      .nightmare-text {
+        font-family: 'Cinzel Decorative', 'Cinzel', Georgia, serif;
+        text-shadow:
+          0 0 25px rgba(196, 26, 26, 0.75),
+          0 0 55px rgba(196, 26, 26, 0.35),
+          0 0 90px rgba(196, 26, 26, 0.15);
+        color: var(--nightmare-accent-pink);
+        letter-spacing: 0.06em;
+      }
+
+      h1, h2, h3, h4, h5, h6 {
+        font-family: 'Cinzel Decorative', 'Cinzel', Georgia, serif;
+      }
+
+      /* ── GLOW EFFECTS: pink → crimson ── */
+      .nightmare-glow {
+        box-shadow:
+          0 0 20px rgba(196, 26, 26, 0.5),
+          0 0 45px rgba(196, 26, 26, 0.25),
+          0 0 70px rgba(196, 26, 26, 0.12);
+      }
+
+      .door-glow {
+        filter:
+          drop-shadow(0 0 12px rgba(196, 26, 26, 0.7))
+          drop-shadow(0 0 28px rgba(196, 26, 26, 0.35));
+      }
+
+      .spooky-border {
+        border-image: linear-gradient(
+          45deg,
+          #C41A1A,
+          #0D0508,
+          #8B0000,
+          #5A0000
+        ) 1;
+      }
+
+      /* ── TAILWIND PINK → CRIMSON ── */
+      .bg-pink-600                      { background-color: #C41A1A; }
+      .bg-pink-500\/20                  { background-color: rgba(196, 26, 26, 0.12); }
+      .border-pink-500\/30              { border-color: rgba(196, 26, 26, 0.30); }
+      .border-pink-500\/50              { border-color: rgba(196, 26, 26, 0.50); }
+      .hover\:border-pink-500\/50:hover { border-color: rgba(196, 26, 26, 0.50); }
+      .hover\:border-pink-500\/60:hover { border-color: rgba(196, 26, 26, 0.60); }
+      .hover\:bg-pink-500\/20:hover     { background-color: rgba(196, 26, 26, 0.12); }
+      .text-pink-400,
+      .text-pink-500,
+      .text-pink-600                    { color: #C41A1A; }
+      .from-pink-600, .from-pink-500    { --tw-gradient-from: #C41A1A; }
+      .to-pink-600,   .to-pink-500      { --tw-gradient-to: #C41A1A; }
+      .via-pink-600                     { --tw-gradient-via: #9A1010; }
+
+      /* ── DEAD CDN BACKGROUNDS → atmospheric dark gradients ── */
+      .bg-image-home {
+        background-image:
+          radial-gradient(ellipse 70% 50% at 50% 20%, rgba(196, 26, 26, 0.10), transparent 65%),
+          linear-gradient(to bottom, #070205 0%, #0D0508 60%, #070205 100%);
+        background-size: cover;
+      }
+      .bg-image-gallery {
+        background-image:
+          linear-gradient(135deg, #070205 0%, #0D0510 50%, #070205 100%);
+      }
+      .bg-image-music {
+        background-image:
+          radial-gradient(ellipse 60% 40% at 50% 0%, rgba(90, 20, 32, 0.15), transparent 70%),
+          linear-gradient(to bottom, #070205, #100510);
+      }
+      .bg-image-behind-scenes {
+        background-image:
+          linear-gradient(to bottom, #070205, #0A0A08);
+      }
+
+      /* ── ASH CANVAS LAYER ── */
+      #nb-ash {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+      }
+      #root {
+        position: relative;
+        z-index: 1;
+      }
+    </style>
   </head>
   <body>
+    <canvas id="nb-ash" aria-hidden="true"></canvas>
     <div id="root"></div>
+    <script>
+      (function () {
+        const canvas = document.getElementById('nb-ash');
+        const ctx    = canvas.getContext('2d');
+        let W, H;
+
+        function resize() {
+          W = canvas.width  = window.innerWidth;
+          H = canvas.height = window.innerHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        // 45 deterministic particles — golden-ratio spread avoids clumping
+        const particles = Array.from({ length: 45 }, (_, i) => ({
+          x:     (i * 137.508) % 100,
+          y:     (i * 71.3)   % 100,
+          size:  0.8 + (i % 7) * 0.22,
+          speed: 0.10 + (i % 6) * 0.055,
+          drift: ((i % 9) - 4) * 0.016,
+          alpha: 0.12 + (i % 7) * 0.04,
+          ember: i % 7 === 0,
+        }));
+
+        function draw(ts) {
+          ctx.clearRect(0, 0, W, H);
+
+          particles.forEach(p => {
+            p.y -= p.speed;
+            p.x += p.drift;
+
+            if (p.y < -2)  { p.y = 102; p.x = (p.x + 13.7) % 100; }
+            if (p.x < -2)  p.x = 102;
+            if (p.x > 102) p.x = -2;
+
+            const px    = (p.x / 100) * W;
+            const py    = (p.y / 100) * H;
+            const pulse = p.ember ? 0.55 + 0.45 * Math.sin(ts * 0.0018 + p.size * 2.8) : 1;
+
+            ctx.save();
+            ctx.globalAlpha = p.alpha * pulse;
+
+            if (p.ember) {
+              ctx.fillStyle  = '#D94C0A';
+              ctx.shadowColor = '#D94C0A';
+              ctx.shadowBlur  = 7;
+            } else {
+              ctx.fillStyle  = '#B89080';
+              ctx.shadowBlur = 0;
+            }
+
+            ctx.beginPath();
+            ctx.ellipse(px, py, p.size, p.size * 0.55, p.drift * 10, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+          });
+
+          requestAnimationFrame(draw);
+        }
+
+        requestAnimationFrame(draw);
+      })();
+    </script>
   </body>
 </html>
