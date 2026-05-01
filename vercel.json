@@ -1,4 +1,7 @@
 {
+  "redirects": [
+    { "source": "/music", "destination": "/music.html", "permanent": false }
+  ],
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ]

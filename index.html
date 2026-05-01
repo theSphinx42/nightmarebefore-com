@@ -181,5 +181,12 @@
         requestAnimationFrame(draw);
       })();
     </script>
+    <script>
+      // Intercept React Router's client-side nav to /music → standalone discography
+      document.addEventListener('click', function (e) {
+        const a = e.target.closest('a[href="/music"]');
+        if (a) { e.preventDefault(); window.location.href = '/music.html'; }
+      }, true);
+    </script>
   </body>
 </html>
