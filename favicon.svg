@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <rect width="32" height="32" fill="#07020A" rx="4"/>
+  <!-- Rose petals -->
+  <circle cx="16" cy="12" r="6" fill="#6B1A2A"/>
+  <circle cx="13" cy="10" r="3.5" fill="#8B1A2A"/>
+  <circle cx="19" cy="10" r="3.5" fill="#8B1A2A"/>
+  <circle cx="16" cy="8"  r="3.5" fill="#8B1A2A"/>
+  <circle cx="16" cy="12" r="3" fill="#C41A1A"/>
+  <!-- Stem -->
+  <rect x="15.2" y="17" width="1.6" height="8" fill="#2A1A10" rx="0.8"/>
+  <!-- Leaf -->
+  <path d="M16.8 21 Q21 19 20.5 23 Q17 22 16.8 21Z" fill="#0F2010"/>
+</svg>
